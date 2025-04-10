@@ -94,23 +94,23 @@ listOfPhone = []
 
 window = tk.Tk()
 window.title("Veterinary Database")
-window.maxsize(1000,1000)
+window.minsize(800,500)
 
 
-txt1 = tk.Button(window,text = "Add New Customer!", width=20, borderwidth=5, highlightthickness=2)
-txt1.config(highlightcolor= "black" , highlightbackground= "black")
+title = tk.Label(window,text = "Delta Vet Company!", font= ('Helvetica',40,'bold'), width=20, height=3, borderwidth=5, highlightthickness=2)
+
+txt1 = tk.Button(window,text = "Add New Customer!", width=18, height=3, borderwidth=5, highlightthickness=2)
+txt1.config(font=('bold',20),highlightcolor= "black" ,highlightbackground= "black")
+
+
+txt2 = tk.Button(window,text = "Change Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2)
+txt2.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black")
 
 
 
-
-txt2 = tk.Button(window,text = "Change Customer Info!", width=20, borderwidth=5, highlightthickness=2)
-txt2.config(highlightcolor= "black" , highlightbackground= "black")
-
-
-
-
-txt1.grid(row=0, column=0)
-txt2.grid(row=0, column=2)
+title.place(x=90,y=50)
+txt1.place(x=60,y=200)
+txt2.place(x=400, y=200)
 
 
 window.mainloop()
