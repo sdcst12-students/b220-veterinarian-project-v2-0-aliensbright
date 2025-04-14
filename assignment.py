@@ -89,8 +89,61 @@ r3 = cursor.fetchall()
 
 
 ###Testing to see if I can add a customer
+
 listOfEmail = []
 listOfPhone = []
+
+def ChangeCustomer():
+    title.destroy()
+    Add.destroy()
+    Change.destroy()
+    fnlabel = tk.Label(window,text="First Name:")
+    fname = tk.Entry(window)
+    fnlabel.grid(row=1,column=1)
+    fname.grid(column=2,row=1)
+    
+
+
+def AddCustomer():
+    title.destroy()
+    Add.destroy()
+    Change.destroy()
+
+
+
+
+    print('\nPlease enter in all the info below,\nremove any spaces.')
+    fname = input('  First Name: ')
+    lname = input('  Last Name: ')
+    phone = input('  Phone Number (input only the digits): ')
+    email = input('  Full Email: ')
+    address = input('  Home Address: ')
+    city = input('  City: ')
+    pCode = input('  Postal Code: ')
+    try: #Ensure that only email matches one custonmer
+        for i in listOfEmail:
+            assert email != i
+        listOfEmail.append(email)
+    except:
+        print("Email already linked to a customer.\n Would you like to replace demographics?") 
+    try: #Ensure that only one phone number matches one customer
+        assert int(phone)
+        for i in listOfPhone:
+            assert email != i
+        listOfPhone.append(phone)
+    except:
+        listOfEmail.remove(email)
+        print("\nCurrent phone number alread.\nPlease use another phone number.")
+        
+    print(f'\n\nPlease check your info,\n\n  First Name: {fname}\n  Last Name: {lname}\n  Phone Number: {phone}\n  Email: {email}\n  Address: {address}\n  City: {city}\n  Postal Code: {pCode}')
+    check = input('\nAnswer "Yes" if all of the info is correct,\nAnswer "No" if some info is incorrect: ')
+    if check=='Yes':
+        cursor.execute(f"insert into vetcustomersinfo (fname,lname,phone,email,address,city,pCode) values ('{fname}','{lname}','{phone}','{email}','{address}','{city}','{pCode}');")
+        print('Input Complete\n')
+    else:
+        listOfEmail.remove(email)
+        listOfPhone.remove(phone)
+        print('Please reenter all of your info.')
 
 window = tk.Tk()
 window.title("Veterinary Database")
@@ -99,53 +152,18 @@ window.minsize(800,500)
 
 title = tk.Label(window,text = "Delta Vet Company!", font= ('Helvetica',40,'bold'), width=20, height=3, borderwidth=5, highlightthickness=2)
 
-txt1 = tk.Button(window,text = "Add New Customer!", width=18, height=3, borderwidth=5, highlightthickness=2)
-txt1.config(font=('bold',20),highlightcolor= "black" ,highlightbackground= "black")
+Add = tk.Button(window,text = "Add New Customer!", width=18, height=3, borderwidth=5, highlightthickness=2)
+Add.config(font=('bold',20),highlightcolor= "black" ,highlightbackground= "black", command=AddCustomer)
 
 
-txt2 = tk.Button(window,text = "Change Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2)
-txt2.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black")
+Change = tk.Button(window,text = "Change Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2)
+Change.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black", command=ChangeCustomer)
 
 
 
-title.place(x=90,y=50)
-txt1.place(x=60,y=200)
-txt2.place(x=400, y=200)
+title.place(x=90,y=30)
+Add.place(x=60,y=200)
+Change.place(x=400, y=200)
 
 
 window.mainloop()
-
-while True:
-    while True:
-        print('\nPlease enter in all the info below,\nremove any spaces.')
-        fname = input('  First Name: ')
-        lname = input('  Last Name: ')
-        phone = input('  Phone Number (input only the digits): ')
-        email = input('  Full Email: ')
-        address = input('  Home Address: ')
-        city = input('  City: ')
-        pCode = input('  Postal Code: ')
-        try: #Ensure that only email matches one custonmer
-            for i in listOfEmail:
-                assert email != i
-            listOfEmail.append(email)
-        except:
-            print("Email already linked to a customer.\n Would you like to replace demographics?") 
-        try: #Ensure that only one phone number matches one customer
-            assert int(phone)
-            for i in listOfPhone:
-                assert email != i
-            listOfPhone.append(phone)
-        except:
-            listOfEmail.remove(email)
-            print("\nCurrent phone number alread.\nPlease use another phone number.")
-            break
-        print(f'\n\nPlease check your info,\n\n  First Name: {fname}\n  Last Name: {lname}\n  Phone Number: {phone}\n  Email: {email}\n  Address: {address}\n  City: {city}\n  Postal Code: {pCode}')
-        check = input('\nAnswer "Yes" if all of the info is correct,\nAnswer "No" if some info is incorrect: ')
-        if check=='Yes':
-            cursor.execute(f"insert into vetcustomersinfo (fname,lname,phone,email,address,city,pCode) values ('{fname}','{lname}','{phone}','{email}','{address}','{city}','{pCode}');")
-            print('Input Complete\n')
-        else:
-            listOfEmail.remove(email)
-            listOfPhone.remove(phone)
-            print('Please reenter all of your info.')
