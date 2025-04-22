@@ -93,33 +93,53 @@ r3 = cursor.fetchall()
 listOfEmail = []
 listOfPhone = []
 
-def ChangeCustomer():
-    title.destroy()
-    Add.destroy()
-    Change.destroy()
-    fnlabel = tk.Label(window,text="First Name:")
-    fname = tk.Entry(window)
-    fnlabel.grid(row=1,column=1)
-    fname.grid(column=2,row=1)
-    
+window = tk.Tk()
+title = tk.Label(window,text = "Delta Vet Company!", font= ('Helvetica',40,'bold'), width=20, height=3, borderwidth=5, highlightthickness=2)
+Add = tk.Button(window,text = "Add New Customer!", width=18, height=3, borderwidth=5, highlightthickness=2)
+Add.config(font=('bold',20),highlightcolor= "black" ,highlightbackground= "black", command=AddCustomer)
+Change = tk.Button(window,text = "Change Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2)
+Change.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black", command=ChangeCustomer)
+Search = tk.Button(window,text = "Search Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2)
+Search.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black", command=SearchCustomer)
+title.place(x=90,y=30)
+Add.place(x=60,y=200)
+Change.place(x=400, y=200)
+Search.place(x=250, y=350)
 
 
-def AddCustomer():
-    title.destroy()
-    Add.destroy()
-    Change.destroy()
+class ChangeCustomer():
+    def __init__(self,window):
+        """
+        title.destroy()
+        Add.destroy()
+        Change.destroy()
+        Search.destroy()
+        tk.Label(window,text="Please enter in all information. \nEnsure that there are no spaces.",font= ('Helvetica',20,'bold')).grid(row=1,column=1,columnspan=4)
+        for i in range(7):
+            labels[i].grid(column=2,row=(i+2))
+            entries[i].grid(column=3,row=(i+2))
+        Check.grid(row=9,column=2,columnspan=2)"""
 
+class SearchCustomer():
+    """
+    def __init__(self,window):
+        title.destroy()
+        Add.destroy()
+        Change.destroy()
+        Search.destroy()"""
 
+class AddCustomer():
+    def __init__(self,window):
+        title.destroy()
+        Add.destroy()
+        Change.destroy()
+        Search.destroy()
+        tk.Label(window,text="Please enter in all information. \nEnsure that there are no spaces.",font= ('Helvetica',20,'bold')).grid(row=1,column=1,columnspan=4)
+        for i in range(7):
+            labels[i].grid(column=2,row=(i+2))
+            entries[i].grid(column=3,row=(i+2))
+        Check.grid(row=9,column=2,columnspan=2)
 
-
-    print('\nPlease enter in all the info below,\nremove any spaces.')
-    fname = input('  First Name: ')
-    lname = input('  Last Name: ')
-    phone = input('  Phone Number (input only the digits): ')
-    email = input('  Full Email: ')
-    address = input('  Home Address: ')
-    city = input('  City: ')
-    pCode = input('  Postal Code: ')
     try: #Ensure that only email matches one custonmer
         for i in listOfEmail:
             assert email != i
@@ -133,7 +153,7 @@ def AddCustomer():
         listOfPhone.append(phone)
     except:
         listOfEmail.remove(email)
-        print("\nCurrent phone number alread.\nPlease use another phone number.")
+        print("\nCurrent phone number already in use.\nPlease use another phone number.")
         
     print(f'\n\nPlease check your info,\n\n  First Name: {fname}\n  Last Name: {lname}\n  Phone Number: {phone}\n  Email: {email}\n  Address: {address}\n  City: {city}\n  Postal Code: {pCode}')
     check = input('\nAnswer "Yes" if all of the info is correct,\nAnswer "No" if some info is incorrect: ')
@@ -145,25 +165,37 @@ def AddCustomer():
         listOfPhone.remove(phone)
         print('Please reenter all of your info.')
 
-window = tk.Tk()
-window.title("Veterinary Database")
-window.minsize(800,500)
-
-
-title = tk.Label(window,text = "Delta Vet Company!", font= ('Helvetica',40,'bold'), width=20, height=3, borderwidth=5, highlightthickness=2)
-
-Add = tk.Button(window,text = "Add New Customer!", width=18, height=3, borderwidth=5, highlightthickness=2)
-Add.config(font=('bold',20),highlightcolor= "black" ,highlightbackground= "black", command=AddCustomer)
-
-
-Change = tk.Button(window,text = "Change Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2)
-Change.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black", command=ChangeCustomer)
-
-
+fnlabel = tk.Label(window,text="First Name:")
+lnlabel = tk.Label(window,text="Last Name:")
+pnlabel = tk.Label(window,text = 'Phone Number:')
+elabel = tk.Label(window,text = 'Email Address:')
+alabel = tk.Label(window,text = 'Address:')
+clabel = tk.Label(window,text = 'City:')
+pClabel = tk.Label(window,text = 'Postal Code:')
+fname = tk.Entry(window)
+lname = tk.Entry(window)
+phone = tk.Entry(window)
+email = tk.Entry(window)
+address = tk.Entry(window)
+city = tk.Entry(window)
+pCode = tk.Entry(window)
+labels = (fnlabel,lnlabel,pnlabel,elabel,alabel,clabel,pClabel)
+entries = (fname,lname,phone,email,address,city ,pCode)
 
 title.place(x=90,y=30)
 Add.place(x=60,y=200)
+Change.place(x=400,y=200)
+Search.place(x=250,y=350)
+window = tk.Tk()
+title = tk.Label(window,text = "Delta Vet Company!", font= ('Helvetica',40,'bold'), width=20, height=3, borderwidth=5, highlightthickness=2)
+Add = tk.Button(window,text = "Add New Customer!", width=18, height=3, borderwidth=5, highlightthickness=2)
+Add.config(font=('bold',20),highlightcolor= "black" ,highlightbackground= "black", command=AddCustomer)
+Change = tk.Button(window,text = "Change Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2)
+Change.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black", command=ChangeCustomer)
+Search = tk.Button(window,text = "Search Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2)
+Search.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black", command=SearchCustomer)
+title.place(x=90,y=30)
+Add.place(x=60,y=200)
 Change.place(x=400, y=200)
-
-
+Search.place(x=250, y=350)
 window.mainloop()
