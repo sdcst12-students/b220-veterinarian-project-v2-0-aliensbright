@@ -94,42 +94,13 @@ listOfEmail = []
 listOfPhone = []
 
 window = tk.Tk()
-title = tk.Label(window,text = "Delta Vet Company!", font= ('Helvetica',40,'bold'), width=20, height=3, borderwidth=5, highlightthickness=2)
-Add = tk.Button(window,text = "Add New Customer!", width=18, height=3, borderwidth=5, highlightthickness=2)
-Add.config(font=('bold',20),highlightcolor= "black" ,highlightbackground= "black", command=AddCustomer)
-Change = tk.Button(window,text = "Change Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2)
-Change.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black", command=ChangeCustomer)
-Search = tk.Button(window,text = "Search Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2)
-Search.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black", command=SearchCustomer)
-title.place(x=90,y=30)
-Add.place(x=60,y=200)
-Change.place(x=400, y=200)
-Search.place(x=250, y=350)
+window.minsize(800,600)
+
 
 
 class ChangeCustomer():
     def __init__(self,window):
-        """
-        title.destroy()
-        Add.destroy()
-        Change.destroy()
-        Search.destroy()
-        tk.Label(window,text="Please enter in all information. \nEnsure that there are no spaces.",font= ('Helvetica',20,'bold')).grid(row=1,column=1,columnspan=4)
-        for i in range(7):
-            labels[i].grid(column=2,row=(i+2))
-            entries[i].grid(column=3,row=(i+2))
-        Check.grid(row=9,column=2,columnspan=2)"""
-
-class SearchCustomer():
-    """
-    def __init__(self,window):
-        title.destroy()
-        Add.destroy()
-        Change.destroy()
-        Search.destroy()"""
-
-class AddCustomer():
-    def __init__(self,window):
+        self.window = window
         title.destroy()
         Add.destroy()
         Change.destroy()
@@ -140,6 +111,32 @@ class AddCustomer():
             entries[i].grid(column=3,row=(i+2))
         Check.grid(row=9,column=2,columnspan=2)
 
+class SearchCustomer():
+    def __init__(self,window):
+        self.window = window
+        title.destroy()
+        Add.destroy()
+        Change.destroy()
+        Search.destroy()
+        tk.Label(window,text="Please enter in the information\nthat you would like to search by. \nEnsure that only one cell is filled.",font= ('Helvetica',20,'bold')).grid(row=1,column=1,columnspan=4)
+        for i in range(7):
+            labels[i].grid(column=2,row=(i+2))
+            entries[i].grid(column=3,row=(i+2))
+        Check.grid(row=9,column=2,columnspan=2)
+
+class AddInterface():
+    def __init__(self,window):
+        self.window = window
+        title.destroy()
+        Add.destroy()
+        Change.destroy()
+        Search.destroy()
+        tk.Label(window,text="Please enter in all information. \nEnsure that there are no spaces.",font= ('Helvetica',20,'bold')).grid(row=1,column=1,columnspan=4)
+        for i in range(7):
+            labels[i].grid(column=2,row=(i+2))
+            entries[i].grid(column=3,row=(i+2))
+        Check.grid(row=9,column=2,columnspan=2)
+'''
     try: #Ensure that only email matches one custonmer
         for i in listOfEmail:
             assert email != i
@@ -163,7 +160,15 @@ class AddCustomer():
     else:
         listOfEmail.remove(email)
         listOfPhone.remove(phone)
-        print('Please reenter all of your info.')
+        print('Please reenter all of your info.')'''
+
+class addInfo():
+    def __init__(self,window):
+        self.window = window
+        for i in entriesDict:
+            
+
+
 
 fnlabel = tk.Label(window,text="First Name:")
 lnlabel = tk.Label(window,text="Last Name:")
@@ -180,22 +185,28 @@ address = tk.Entry(window)
 city = tk.Entry(window)
 pCode = tk.Entry(window)
 labels = (fnlabel,lnlabel,pnlabel,elabel,alabel,clabel,pClabel)
-entries = (fname,lname,phone,email,address,city ,pCode)
+entries = (fname,lname,phone,email,address,city,pCode) 
+entriesDict = {'fname':'','lname':'','phone':'','email':'','address':'','city':'','pCode':''}
+
+title = tk.Label(window,text = "Delta Vet Company!", font= ('Helvetica',40,'bold'), width=20, height=3, borderwidth=5, highlightthickness=2)
+
+Add = tk.Button(window,text = "Add New Customer!", width=18, height=3, borderwidth=5, highlightthickness=2)
+Add.config(font=('bold',20),highlightcolor= "black" ,highlightbackground= "black",command=lambda: AddInterface(window))
+
+Change = tk.Button(window,text = "Change Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2)
+Change.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black")
+
+Search = tk.Button(window,text = "Search Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2)
+Search.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black",command=lambda: SearchCustomer(window))
+
+Check = tk.Button(window,text = "Done Inputting?", width=18, height=3, borderwidth=5, highlightthickness=2)
+Check.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black",command=lambda: addInfo(window))
+
 
 title.place(x=90,y=30)
 Add.place(x=60,y=200)
 Change.place(x=400,y=200)
 Search.place(x=250,y=350)
-window = tk.Tk()
-title = tk.Label(window,text = "Delta Vet Company!", font= ('Helvetica',40,'bold'), width=20, height=3, borderwidth=5, highlightthickness=2)
-Add = tk.Button(window,text = "Add New Customer!", width=18, height=3, borderwidth=5, highlightthickness=2)
-Add.config(font=('bold',20),highlightcolor= "black" ,highlightbackground= "black", command=AddCustomer)
-Change = tk.Button(window,text = "Change Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2)
-Change.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black", command=ChangeCustomer)
-Search = tk.Button(window,text = "Search Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2)
-Search.config(font=('bold',20),highlightcolor= "black" , highlightbackground= "black", command=SearchCustomer)
-title.place(x=90,y=30)
-Add.place(x=60,y=200)
-Change.place(x=400, y=200)
-Search.place(x=250, y=350)
+
+
 window.mainloop()
