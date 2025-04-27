@@ -100,7 +100,7 @@ class WindowInterface:
         self.title = tk.Label(window,text = "Delta Vet Company!", font= ('Helvetica',40,'bold'), width=20, height=3, borderwidth=5, highlightthickness=2)
         self.Add = tk.Button(window,text = "Add New Customer!", width=18, height=3, borderwidth=5, highlightthickness=2,font=('bold',20),highlightcolor= "black" ,highlightbackground= "black",command=lambda:self.AddCustomerInterface(window))
         self.Change = tk.Button(window,text = "Change Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2,font=('bold',20),highlightcolor= "black" , highlightbackground= "black",command=lambda:self.ChangeCustomerInterface(window))
-        self.Search = tk.Button(window,text = "Search Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2,font=('bold',20),highlightcolor= "black" , highlightbackground= "black",command=lambda: self.SearchCustomerInfo(window))
+        self.Search = tk.Button(window,text = "Search Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2,font=('bold',20),highlightcolor= "black" , highlightbackground= "black",command=lambda: self.SearchCustomerInterface(window))
 
         self.fnlabel = tk.Label(window,text="First Name:")
         self.lnlabel = tk.Label(window,text="Last Name:")
@@ -127,7 +127,8 @@ class WindowInterface:
         self.ChangeLabel = tk.Label(window,text="Please enter in all information. \nEnsure that there are no spaces.",font= ('Helvetica',20,'bold'))
 
         self.AddButton = tk.Button(window,text = "Done Inputting?", width=18, height=3, borderwidth=5, highlightthickness=2,font=('bold',20),highlightcolor= "black" , highlightbackground= "black",command=lambda: self.AddToDatabase(window))
-        
+        self.SearchButton = tk.Button(window,text = "Ready to Search?", width=18, height=3, borderwidth=5, highlightthickness=2,font=('bold',20),highlightcolor= "black" , highlightbackground= "black",command=lambda: self.SearchDatabase(window))
+
         self.Invalid = tk.Label(window,text="Email or Phone Number already in\nuse. Would you like to change info?",font= ('Helvetica',20,'bold'))
         self.MainPageInterface(window)
     
@@ -160,7 +161,7 @@ class WindowInterface:
         self.AddLabel.grid_forget()
 
         for i in range(7):
-            self.entriesDict[i][1] = self.entries[i].get()
+            self.entriesDict[i][1] = self.entries[i].get().replace(' ','')
             self.labels[i].grid_forget()
             self.entries[i].grid_forget()
 
@@ -181,29 +182,42 @@ class WindowInterface:
             listOfEmail.remove(self.entriesDict[3][1])
             #self.Invalid.place(x=150,y=20)
             
-        DatabaseMods.AddCustomerInfo(DatabaseMods,self.entriesDict)
+        database.AddCustomerInfo(self.entriesDict)
         self.MainPageInterface(window)
          
     def ChangeCustomerInterface(self,window):
         self.window = window
-        self.title.destroy()
-        self.Add.destroy()
-        self.Change.destroy()
-        self.Search.destroy()
+        self.title.place_forget()
+        self.Add.place_forget()
+        self.Change.place_forget()
+        self.Search.place_forget()
 
-    def SearchCustomerInfo(self,window):
+    def SearchCustomerInterface(self,window):
         self.window = window
-        self.title.destroy()
-        self.Add.destroy()
-        self.Change.destroy()
-        self.Search.destroy()
-        self.SearchLabel.grid(row=1,column=1,columnspan=4)
+        self.title.place_forget()
+        self.Add.place_forget()
+        self.Change.place_forget()
+        self.Search.place_forget()
 
+        self.SearchLabel.grid(row=1,column=1,columnspan=4)
+        
         for i in range(7):
             self.labels[i].grid(column=2,row=(i+2))
             self.entries[i].grid(column=3,row=(i+2))
+        
+        self.SearchButton.grid(row=9,column=2,columnspan=2)
 
+    def SearchDatabase(self,window):
+        self.SearchLabel.grid_forget()
+        self.AddLabel.grid_forget()
 
+        for i in range(7):
+            self.entriesDict[i][1] = self.entries[i].get().replace(' ','') #Creates a list
+            self.labels[i].grid_forget()
+            self.entries[i].grid_forget()
+
+        database.SearchCustomerInfo(self.entriesDict)
+        self.MainPageInterface(window)
 
 class DatabaseMods:
     def __init__(self,file):
@@ -246,57 +260,33 @@ class DatabaseMods:
 
     def AddCustomerInfo(self,list):
         self.list = list
-        self.connection = sqlite3.connect(file)
-        self.cursor = self.connection.cursor()
-        print('test')
-        qAdd = f"insert into vetcustomersinfo (fname,lname,phone,email,address,city,pCode) values ('{self.list[0][1]}','{self.list[1][1]}','{self.list[2][1]}','{self.list[3][1]}','{self.list[4][1]}','{self.list[5][1]}','{self.list[6][1]}')"
+        qAdd = f"insert into vetcustomersinfo (fname,lname,phone,email,address,city,pCode) values ('{self.list[0][1]}','{self.list[1][1]}','{self.list[2][1]}','{self.list[3][1]}','{self.list[4][1]}','{self.list[5][1]}','{self.list[6][1]}');"
         self.cursor.execute(qAdd)
-        self.r3 = self.cursor.fetchall()
+        self.A = self.cursor.fetchall()
         print('Input Complete\n')
 
+    def SearchCustomerInfo(self,list):
+        self.list = list
+        queryText = ''
+        for i in self.list:
+            if i[1] == '':
+                queryText = queryText + ' ' + i[0] + ' = ' + i[1] + ' and'
+        try
+            #queryText = queryText.removesuffix(' and')
+            qSearch = f'select * from vetcustomersinfo' + queryText + ';'
+            self.cursor.execute(qSearch)
+            self.S = self.cursor.fetchall()
+            print(self.S)
+            print(queryText)
+        except:
+            pass
 
+        print('Input Complete\n')
 
     def ChangeCustomerInfo(self,list):
             pass
                         
-class ChangeCustomer:
-    def __init__(self,window):
-        self.window = window
-        title.destroy()
-        Add.destroy()
-        Change.destroy()
-        Search.destroy()
-        tk.Label(window,text="Please enter in all information. \nEnsure that there are no spaces.",font= ('Helvetica',20,'bold')).grid(row=1,column=1,columnspan=4)
-        for i in range(7):
-            labels[i].grid(column=2,row=(i+2))
-            entries[i].grid(column=3,row=(i+2))
-        AddButton.grid(row=9,column=2,columnspan=2)
 
-class SearchCustomer():
-    def __init__(self,window):
-        self.window = window
-        title.destroy()
-        Add.destroy()
-        Change.destroy()
-        Search.destroy()
-        tk.Label(window,text="Please enter in the information\nthat you would like to search by. \nEnsure that only one cell is filled.",font= ('Helvetica',20,'bold')).grid(row=1,column=1,columnspan=4)
-        for i in range(7):
-            labels[i].grid(column=2,row=(i+2))
-            entries[i].grid(column=3,row=(i+2))
-        AddButton.grid(row=9,column=2,columnspan=2)
-
-class AddInterface():
-    def __init__(self,window):
-        self.window = window
-        title.destroy()
-        Add.destroy()
-        Change.destroy()
-        Search.destroy()
-        AddLabel.grid(row=1,column=1,columnspan=4)
-        for i in range(7):
-            labels[i].grid(column=2,row=(i+2))
-            entries[i].grid(column=3,row=(i+2))
-        AddButton.grid(row=9,column=2,columnspan=2)
 '''
     try: #Ensure that only email matches one custonmer
         for i in listOfEmail:
@@ -323,69 +313,6 @@ class AddInterface():
         listOfPhone.remove(phone)
         print('Please reenter all of your info.')'''
 
-class addInfo():
-    def __init__(self,window):
-        self.window = window
-        AddButton.destroy()
-        AddLabel.destroy()
-        for i in entriesDict:
-            entriesDict[i] = i.get()
-            print(i,entriesDict[i])
-        for i in range(7):
-            labels[i].destroy()
-            entries[i].destroy()
-        self.checkEmailPhone()
-
-    def checkEmailPhone(self):
-        try: #Ensure that only email matches one custonmer
-            for i in listOfEmail:
-                assert entriesDict[email] != i
-            listOfEmail.append(entriesDict[email])
-        except:
-            print('email not working')
-            Invalid.place(50,100)
-        try: #Ensure that only one phone number matches one customer
-            for i in listOfPhone:
-                assert entriesDict[phone] != i
-            listOfPhone.append(entriesDict[phone])
-            print(listOfPhone)
-        except:
-            print('phonw  number working')
-            listOfEmail.remove(entriesDict[email])
-            Invalid.place(x=50,y=100)
-        
-        
-
-            
-            
-
-"""
-
-fnlabel = tk.Label(window,text="First Name:")
-lnlabel = tk.Label(window,text="Last Name:")
-pnlabel = tk.Label(window,text = 'Phone Number:')
-elabel = tk.Label(window,text = 'Email Address:')
-alabel = tk.Label(window,text = 'Address:')
-clabel = tk.Label(window,text = 'City:')
-pClabel = tk.Label(window,text = 'Postal Code:')
-fname = tk.Entry(window)
-lname = tk.Entry(window)
-phone = tk.Entry(window)
-email = tk.Entry(window)
-address = tk.Entry(window)
-city = tk.Entry(window)
-pCode = tk.Entry(window)
-labels = (fnlabel,lnlabel,pnlabel,elabel,alabel,clabel,pClabel)
-entries = (fname,lname,phone,email,address,city,pCode) 
-entriesDict = {fname:'',lname:'',phone:'',email:'',address:'',city:'',pCode:''}
-
-
-AddButton = tk.Button(window,text = "Done Inputting?", width=18, height=3, borderwidth=5, highlightthickness=2,font=('bold',20),highlightcolor= "black" , highlightbackground= "black",command=lambda: addInfo(window))
-
-AddLabel = tk.Label(window,text="Please enter in all information. \nEnsure that there are no spaces.",font= ('Helvetica',20,'bold'))
-
-Invalid = tk.Label(window,text="Email or Phone Number already in\nuse. Would you like to change info?",font= ('Helvetica',20,'bold'))
-"""
 
 window1 = tk.Tk()
 window1.minsize(800,800)
