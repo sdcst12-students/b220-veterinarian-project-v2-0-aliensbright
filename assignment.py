@@ -43,52 +43,6 @@ search for all users that partially match a specific last name
 search for multiple criteria"""
 
 
-file = 'dbase.db'
-connection = sqlite3.connect(file)
-#print(connection)
-
-cursor = connection.cursor()
-
-
-qCustomerInfoCreation = """
-create table if not exists vetcustomersinfo (
-    fname tinytext,
-    lname tinytext,
-    phone tinytext,
-    email tinytext,
-    address tinytext,
-    city tinytext,
-    pCode tinytext);
-"""
-cursor.execute(qCustomerInfoCreation)
-r1 = cursor.fetchall()
-
-qPetInfoCreation = """
-create table if not exists petInfo (
-    id integer primary key autoincrement,
-    petName tinytext,
-    type tinytext,
-    breed tinytext,
-    birthdate date,
-    ownerID tinytext);
-"""
-cursor.execute(qPetInfoCreation)
-r2 = cursor.fetchall()
-
-qVisitsCreation = """
-create table if not exists visits (
-    id integer primary key autoincrement,
-    ownerID tinytext,
-    petID tinytext,
-    details text,
-    cost tinyint,
-    paid tinyint);
-"""
-cursor.execute(qVisitsCreation)
-r3 = cursor.fetchall()
-
-
-
 listOfEmail = []
 listOfPhone = []
 
@@ -269,14 +223,18 @@ class DatabaseMods:
         self.list = list
         queryText = ''
         for i in self.list:
-            if i[1] == '':
+            if i[1] != '':
                 queryText = queryText + ' ' + i[0] + ' = ' + i[1] + ' and'
-        try
+        print('hi',queryText)
+        try:
             #queryText = queryText.removesuffix(' and')
-            qSearch = f'select * from vetcustomersinfo' + queryText + ';'
+            qSearch = f'SELECT * FROM vetcustomersinfo' + queryText
+            print(qSearch)
             self.cursor.execute(qSearch)
             self.S = self.cursor.fetchall()
-            print(self.S)
+            for i in self.S:
+                print(i)
+            print('hi',self.S)
             print(queryText)
         except:
             pass
