@@ -50,7 +50,7 @@ listOfPhone = []
 class WindowInterface:
     def __init__(self,window): #defining everything
         self.window = window
-
+        
         self.title = tk.Label(window,text = "Delta Vet Company!", font= ('Helvetica',40,'bold'), width=20, height=3, borderwidth=5, highlightthickness=2)
         self.Add = tk.Button(window,text = "Add New Customer!", width=18, height=3, borderwidth=5, highlightthickness=2,font=('bold',20),highlightcolor= "black" ,highlightbackground= "black",command=lambda:self.AddCustomerInterface(window))
         self.Change = tk.Button(window,text = "Change Customer Info!", width=18, height=3, borderwidth=5, highlightthickness=2,font=('bold',20),highlightcolor= "black" , highlightbackground= "black",command=lambda:self.ChangeCustomerInterface(window))
@@ -131,12 +131,12 @@ class WindowInterface:
             for i in listOfPhone:
                 assert self.entriesDict[2][1] != i or self.entriesDict[2][1] == ''
             listOfPhone.append(self.entriesDict[2][1])
+            database.AddCustomerInfo(self.entriesDict)
         except:
             print('phonw  number working')
             listOfEmail.remove(self.entriesDict[3][1])
             #self.Invalid.place(x=150,y=20)
             
-        database.AddCustomerInfo(self.entriesDict)
         self.MainPageInterface(window)
          
     def ChangeCustomerInterface(self,window):
@@ -177,6 +177,8 @@ class DatabaseMods:
     def __init__(self,file):
         self.connection = sqlite3.connect(file)
         self.cursor = self.connection.cursor()
+
+
         qCustomerInfoCreation = """
         create table if not exists vetcustomersinfo (
             fname tinytext,
@@ -188,6 +190,7 @@ class DatabaseMods:
             pCode tinytext);
         """
         self.cursor.execute(qCustomerInfoCreation)
+        self.r3 = self.cursor.fetchall()
 
         qPetInfoCreation = """
         create table if not exists petInfo (
@@ -199,6 +202,7 @@ class DatabaseMods:
             ownerID tinytext);
         """
         self.cursor.execute(qPetInfoCreation)
+        self.r3 = self.cursor.fetchall()
 
         qVisitsCreation = """
         create table if not exists visits (
@@ -212,12 +216,18 @@ class DatabaseMods:
         self.cursor.execute(qVisitsCreation)
         self.r3 = self.cursor.fetchall()
 
+        qTables = "SELECT name FROM sqlite_master WHERE type='table';"
+        self.cursor.execute(qTables)
+        self.r3 = self.cursor.fetchall()
+        print(self.r3)
+
     def AddCustomerInfo(self,list):
         self.list = list
         qAdd = f"insert into vetcustomersinfo (fname,lname,phone,email,address,city,pCode) values ('{self.list[0][1]}','{self.list[1][1]}','{self.list[2][1]}','{self.list[3][1]}','{self.list[4][1]}','{self.list[5][1]}','{self.list[6][1]}');"
         self.cursor.execute(qAdd)
+        self.connection.commit()
         self.A = self.cursor.fetchall()
-        print('Input Complete\n')
+        print(self.A,'Input Complete\n')
 
     def SearchCustomerInfo(self,list):
         self.list = list
@@ -227,16 +237,22 @@ class DatabaseMods:
                 queryText = queryText + ' ' + i[0] + ' = ' + i[1] + ' and'
         print('hi',queryText)
         try:
-            #queryText = queryText.removesuffix(' and')
-            qSearch = f'SELECT * FROM vetcustomersinfo' + queryText
+            queryText = queryText.removesuffix(' and')
+            qSearch = f'SELECT * FROM vetcustomersinfo where' + queryText
             print(qSearch)
             self.cursor.execute(qSearch)
+            self.connection.commit()
             self.S = self.cursor.fetchall()
             for i in self.S:
                 print(i)
             print('hi',self.S)
             print(queryText)
         except:
+            self.cursor.execute('SELECT * FROM vetcustomersinfo')
+            self.connection.commit()
+            self.S = self.cursor.fetchall()
+            for i in self.S:
+                print(i)
             pass
 
         print('Input Complete\n')
@@ -274,7 +290,7 @@ class DatabaseMods:
 
 window1 = tk.Tk()
 window1.minsize(800,800)
-gui = WindowInterface(window1)
 db = 'dbase.db'
 database = DatabaseMods(db)
+gui = WindowInterface(window1)
 window1.mainloop()
