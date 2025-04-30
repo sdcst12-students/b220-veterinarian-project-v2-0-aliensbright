@@ -119,23 +119,25 @@ class WindowInterface:
             self.labels[i].grid_forget()
             self.entries[i].grid_forget()
 
-        try: #Ensure that only email matches one custonmer
+        try: #Ensure that only email matches one customer
+            for i in range(7):
+                assert self.entriesDict[i][1] != ''
             for i in listOfEmail:
-                assert self.entriesDict[3][1] != i or self.entriesDict[3][1] == ''
+                assert self.entriesDict[3][1] != i
             listOfEmail.append(self.entriesDict[3][1])
+            try: #Ensure that only one phone number matches one customer
+                assert self.entriesDict[2][1] != ''
+                for i in listOfPhone:
+                    assert self.entriesDict[2][1] != i
+                listOfPhone.append(self.entriesDict[2][1])
+                database.AddCustomerInfo(self.entriesDict)
+                self.entriesDict = [['fname',''],['lname',''],['phone',''],['email',''],['address',''],['city',''],['pCode','']]
+            except:
+                print('phone number not working')
+                listOfEmail.remove(self.entriesDict[3][1])
         except:
             print('email not working')
             #self.Invalid.place(50,100)
-
-        try: #Ensure that only one phone number matches one customer
-            for i in listOfPhone:
-                assert self.entriesDict[2][1] != i or self.entriesDict[2][1] == ''
-            listOfPhone.append(self.entriesDict[2][1])
-            database.AddCustomerInfo(self.entriesDict)
-        except:
-            print('phonw  number working')
-            listOfEmail.remove(self.entriesDict[3][1])
-            #self.Invalid.place(x=150,y=20)
             
         self.MainPageInterface(window)
          
@@ -169,7 +171,8 @@ class WindowInterface:
             self.entriesDict[i][1] = self.entries[i].get().replace(' ','') #Creates a list
             self.labels[i].grid_forget()
             self.entries[i].grid_forget()
-
+        print(self.entriesDict)
+        self.SearchButton.grid_forget()
         database.SearchCustomerInfo(self.entriesDict)
         self.MainPageInterface(window)
 
@@ -177,7 +180,6 @@ class DatabaseMods:
     def __init__(self,file):
         self.connection = sqlite3.connect(file)
         self.cursor = self.connection.cursor()
-
 
         qCustomerInfoCreation = """
         create table if not exists vetcustomersinfo (
@@ -219,6 +221,9 @@ class DatabaseMods:
         qTables = "SELECT name FROM sqlite_master WHERE type='table';"
         self.cursor.execute(qTables)
         self.r3 = self.cursor.fetchall()
+        
+        self.cursor.execute('PRAGMA table_info(vetcustomersinfo);')
+        self.r3 = self.cursor.fetchall()
         print(self.r3)
 
     def AddCustomerInfo(self,list):
@@ -235,27 +240,20 @@ class DatabaseMods:
         for i in self.list:
             if i[1] != '':
                 queryText = queryText + ' ' + i[0] + ' = ' + i[1] + ' and'
-        print('hi',queryText)
-        try:
-            queryText = queryText.removesuffix(' and')
-            qSearch = f'SELECT * FROM vetcustomersinfo where' + queryText
-            print(qSearch)
-            self.cursor.execute(qSearch)
-            self.connection.commit()
-            self.S = self.cursor.fetchall()
-            for i in self.S:
-                print(i)
-            print('hi',self.S)
-            print(queryText)
-        except:
-            self.cursor.execute('SELECT * FROM vetcustomersinfo')
-            self.connection.commit()
-            self.S = self.cursor.fetchall()
-            for i in self.S:
-                print(i)
-            pass
-
-        print('Input Complete\n')
+        if queryText != '':
+            try:
+                queryText = queryText.removesuffix(' and')
+                qSearch = f'SELECT * FROM vetcustomersinfo where' + queryText
+                print(qSearch)
+                self.cursor.execute(qSearch)
+                self.connection.commit()
+                self.S = self.cursor.fetchall()
+                print(self.S)
+                self.S = ''
+                for i in self.S:
+                    print(i,self.S)
+            except:
+                print(self.S)
 
     def ChangeCustomerInfo(self,list):
             pass
